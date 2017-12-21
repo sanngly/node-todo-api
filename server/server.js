@@ -1,3 +1,5 @@
+require('./config/config');
+
 const express = require('express');
 var bodyParser = require('body-parser');
 const port = process.env.port || 3000;
