@@ -14,7 +14,13 @@ const todos = [{
 }, {
     _id: new ObjectID(),
     text: 'Text message to friends and neighbours'
-}];
+}, {
+    _id: new ObjectID(),
+    text: 'Try to find some suitable exit from the house',
+    completed: false,
+    completedAt: 1594
+}
+];
 
 beforeEach((done) => {
     Todo.remove({}).then(() => {
@@ -59,7 +65,7 @@ describe('POST /todos', () => {
                 return done(err);
             }
             Todo.find().then((todos) => {
-                expect(todos.length).toBe(3);
+                expect(todos.length).toBe(4);
                 done();
             }).catch((e) => {
                 done(e);
@@ -74,14 +80,14 @@ describe('GET /todos', () => {
         .get('/todos')
         .expect(200)
         .expect((res) => {
-            expect(res.body.todos.length).toBe(3);            
+            expect(res.body.todos.length).toBe(4);            
         })
         .end((err, res) => {
             if (err) {
                 return done(err);
             }
             Todo.find().then((todos) => {
-                expect(todos.length).toBe(3);
+                expect(todos.length).toBe(4);
                 done();
             }).catch((e) => {
                 done(e);
@@ -151,6 +157,46 @@ describe('DELETE /todos/:id', () => {
         request(app)
         .delete(`/todos/10641895`)
         .expect(404)
+        .end(done);
+    });
+});
+
+describe('PATCH /todos/:id', () => {
+    it('should update the todo', (done)=> {
+        var hexId = todos[0]._id.toHexString();
+        var text = 'This shoudld be a new text from mocha test suite';
+        request(app)
+        .patch(`/todos/${hexId}`)
+        .send({
+            completed: true,
+            text: text
+        })
+        .expect(200)
+        .expect((res) => {
+            expect(res.body.todo.text).toBe(text);
+            expect(res.body.todo.completed).toBe(true);
+            //expect(res.body.todo.completedAt).toBeA('number');
+            //expect(2).toBeA('number');
+        })
+        .end(done);
+    });
+
+    it('should clear competedAt when to do is not completed', (done) => {
+        var hexId = todos[0]._id.toHexString();
+        var text = 'This shoudld be a new text from mocha test suite make';
+        request(app)
+        .patch(`/todos/${hexId}`)
+        .send({
+            completed: false,
+            text: text
+        })
+        .expect(200)
+        .expect((res) => {
+            expect(res.body.todo.text).toBe(text);
+            expect(res.body.todo.completed).toBe(false);
+            expect(res.body.todo.completedAt).toNotExist;
+            //expect(2).toBeA('number');
+        })
         .end(done);
     });
 });
