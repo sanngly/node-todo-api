@@ -39,7 +39,7 @@ const users = [
             password: 'Pass@123',
             tokens: [{
                 access: 'auth',
-                token: jwt.sign({_id: userOneId.toHexString(), access: 'auth'}, 'Qwerty@123').toString()
+                token: jwt.sign({_id: userTwoId.toHexString(), access: 'auth'}, 'Qwerty@123').toString()
             }]	
     }, {
             _id: userThreeId,
