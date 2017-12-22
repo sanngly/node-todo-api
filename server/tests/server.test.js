@@ -221,17 +221,18 @@ describe('GET /users/me', () => {
             expect(res.body._id).toExist;
             expect(res.body.email).toBe(email);
         })
-        .end(done);
-        /* .end((err) => {
+        .end((err) => {
             if(err) {
                 return done(err);
             }
             User.findOne({email}).then((user) => {
                 expect(user).toExist;
-                expect(user.password).toNotBe(password);
+                expect(user.password).toNotEqual(password);
                 done();
+            }).catch((e) => {
+                done(e);
             });
-        }); */
+        }); 
     });
 
     it('should return validation errors if request is invalid', (done) => {
@@ -311,6 +312,44 @@ describe('POST /users/login', () => {
             .catch((e) => {
                 done();
             });
+        });
+    });
+});
+
+describe('DELETE /users/me/token', () => {
+    it('should delete valid token on logout of user', (done) => {
+        request(app)
+        .delete('/users/me/token')
+        .set('x-auth', users[0].tokens[0].token)
+        .expect(200)
+        .end((err, res) => {
+            if(err) {
+                return done(err);
+            }
+            User.findById(users[0]._id).then((user) => {
+                expect(user.tokens.length).toBe(0);
+                done();
+            }).catch((e) => {
+                done(e);
+            }) ;
+        });
+    });
+
+    it('should get unauthorized error with some invalid token', (done) => {
+        request(app)
+        .delete('/users/me/token')
+        .set('x-auth', users[0].tokens[0].token + '1')
+        .expect(401)
+        .end((err, res) => {
+            if(err) {
+                return done(err);
+            }
+            User.findById(users[0]._id).then((user) => {
+                expect(user.tokens.length).toBe(1);
+                done();
+            }).catch((e) => {
+                done(e);
+            }) ;
         });
     });
 });
