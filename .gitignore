@@ -4,3 +4,4 @@ out.txt
 out
 package-lock.json
 greetings.txt
+server/config/config.json
