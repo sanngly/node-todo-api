@@ -9,18 +9,22 @@ const userThreeId = new ObjectID();
 
 const todos = [{
     _id: new ObjectID(),
-    text: 'Call Police 100'
+    text: 'Call Police 100',
+    _creator: userOneId
 }, {
     _id: new ObjectID(),
-    text: 'Switch off the power and lights'
+    text: 'Switch off the power and lights',
+    _creator: userOneId
 }, {
     _id: new ObjectID(),
-    text: 'Text message to friends and neighbours'
+    text: 'Text message to friends and neighbours',
+    _creator: userTwoId
 }, {
     _id: new ObjectID(),
     text: 'Try to find some suitable exit from the house',
     completed: false,
-    completedAt: 1594
+    completedAt: 1594,
+    _creator: userThreeId
 }
 ];
 
